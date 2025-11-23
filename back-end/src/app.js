@@ -11,7 +11,7 @@ import cors from 'cors'
 
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS.split(','),
-  // credentials: true
+  credentials: true
 }))
 
 app.use(logger('dev'))
@@ -24,13 +24,11 @@ app.use(cookieParser())
 import { rateLimit } from 'express-rate-limit'
 
 const limiter = rateLimit({
- windowMs: 60 * 1000,    // Intervalo: 1 minuto
- limit: 20               // Máximo de 20 requisições
+  windowMs: 60 * 1000,    // Intervalo: 1 minuto
+  limit: 20               // Máximo de 20 requisições
 })
 
 app.use(limiter)
-
-
 
 /*********** ROTAS DA API **************/
 

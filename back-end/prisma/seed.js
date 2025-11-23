@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient();
 
@@ -20,6 +21,13 @@ const colors = [
 ]
 
 async function main() {
+  // Apaga todos os registros de todas as tabelas
+  // NOTA: a ordem de exclusão é importante por causa
+  // das restrições de chave estrangeira
+  await prisma.car.deleteMany()
+  await prisma.customer.deleteMany()
+  await prisma.user.deleteMany()
+
   // Criar usuários
   const users = [];
   const numberOfUsers = 4;
@@ -30,7 +38,7 @@ async function main() {
       fullname: 'Administrador do Sistema',
       username: 'admin',
       email: 'admin@vulcom.com.br',
-      password: 'Vulcom@DSM',
+      password: await bcrypt.hash('Vulcom@DSM', 12),
       is_admin: true
     }
   })
@@ -40,9 +48,9 @@ async function main() {
     const user = await prisma.user.create({
       data: {
         fullname: faker.person.fullName(),
-        username: faker.internet.username(),
+        username: faker.internet.userName(),
         email: faker.internet.email(),
-        password: 'senha123',
+        password: await bcrypt.hash('senha123', 12),
         is_admin: i === 0,
       },
     });
