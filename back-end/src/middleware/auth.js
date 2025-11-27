@@ -1,4 +1,11 @@
 /*
+Vulnerabilidade: API2:2023 - Falha de autenticação.
+Esta vulnerabilidade foi evitada no código ao:
+1. Verificar a presença de um token de autorização (seja em cookie ou cabeçalho 'Authorization').
+2. Utilizar a biblioteca 'jsonwebtoken' para verificar a integridade e validade do token com um segredo (TOKEN_SECRET), impedindo tokens forjados ou expirados.
+3. Interceptar acessos não autorizados com resposta HTTP 403 (Forbidden), garantindo que apenas usuários autenticados e com tokens válidos prossigam.
+*/
+/*
   Este middleware intercepta todas as rotas e verifica
   se um token de autorização foi enviado junto com a
   requisição

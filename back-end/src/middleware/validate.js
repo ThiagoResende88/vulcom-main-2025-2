@@ -1,4 +1,12 @@
 /*
+Vulnerabilidade: API3:2023 - Falha de autorização a nível de propriedade (Mass Assignment).
+Esta vulnerabilidade foi evitada no código ao:
+1. Utilizar a biblioteca Zod para definir schemas rígidos para a validação do corpo das requisições (req.body).
+2. Garantir que apenas as propriedades esperadas e autorizadas sejam aceitas e processadas, rejeitando qualquer propriedade extra ou malformada.
+3. Prevenir ataques de "Mass Assignment" que poderiam levar à manipulação não autorizada de dados ou elevação de privilégios, como a inserção de campos não previstos no modelo.
+4. Retornar HTTP 422 (Unprocessable Entity) com mensagens de erro claras para o front-end em caso de falha de validação, oferecendo feedback útil para a correção.
+*/
+/*
   Função que retorna um middleware de validação do Zod.
   Parâmetros:
   - schema: esquema do Zod a ser usado na validação.

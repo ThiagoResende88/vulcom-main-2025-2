@@ -57,16 +57,23 @@ controller.retrieveAll = async function(req, res) {
   }
 }
 
-controller.retrieveOne = async function(req, res) {
-  try {
+  controller.retrieveOne = async function(req, res) {
+    try {
 
-    // Somente usuários administradores ou o próprio usuário
-    // autenticado podem acessar este recurso
-    // HTTP 403: Forbidden
-    if(! (req?.authUser?.is_admin || 
-      Number(req?.authUser?.id) === Number(req.params.id))) 
-      return res.status(403).end()
-
+      // Somente usuários administradores ou o próprio usuário
+      // autenticado podem acessar este recurso
+      // HTTP 403: Forbidden
+      if(! (req?.authUser?.is_admin || 
+        Number(req?.authUser?.id) === Number(req.params.id))) 
+        return res.status(403).end()
+    
+    /*
+    Vulnerabilidade: API1:2023 - Falha de autorização a nível de objeto (Broken Object Level Authorization - BOLA).
+    Esta vulnerabilidade foi evitada no código ao:
+    1. Implementar uma verificação explícita de autorização antes de permitir o acesso a um objeto (usuário) específico.
+    2. Permitir que apenas usuários administradores (`req.authUser.is_admin`) ou o próprio usuário (`req.authUser.id === req.params.id`) acessem os dados de um determinado ID de usuário.
+    3. Retornar HTTP 403 (Forbidden) se o usuário autenticado não tiver permissão para acessar o recurso solicitado, prevenindo que usuários comuns consultem dados de outros usuários apenas alterando o ID na requisição.
+    */
     const result = await prisma.user.findUnique({
       // Omite o campo "password" do resultado
       // por questão de segurança
